@@ -32,7 +32,7 @@ func (*ternaryUtil) TernaryDo(boole bool, fn1 func() interface{}, fn2 func() int
 func (*ternaryUtil) Or(values ...interface{}) interface{} {
 	var v interface{}
 	for _, v = range values {
-		if !Reflect.IsZero(&v) {
+		if !Reflect.IsZero(v) {
 			return v
 		}
 	}
@@ -44,7 +44,7 @@ func (*ternaryUtil) OrDo(fns ...func() interface{}) interface{} {
 	var v interface{}
 	for _, fn := range fns {
 		v = fn()
-		if !Reflect.IsZero(&v) {
+		if !Reflect.IsZero(v) {
 			return v
 		}
 	}
