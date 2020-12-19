@@ -21,8 +21,10 @@ func (*recoverCli) WarpCall(fn func() error) (err error) {
 	// 包装执行, 拦截panic
 	defer func() {
 		e := recover()
+		if e == nil {
+			return
+		}
 		switch v := e.(type) {
-		case nil:
 		case error:
 			err = v
 		case string:
