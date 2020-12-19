@@ -26,7 +26,7 @@ func (*syncUtil) DoWithContext(ctx context.Context, fn func() interface{}) (out 
 		return fn()
 	}
 
-	done := make(chan struct{})
+	done := make(chan struct{}, 1)
 	go func() {
 		out = fn()
 		done <- struct{}{}
