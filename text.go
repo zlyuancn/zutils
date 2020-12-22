@@ -249,3 +249,8 @@ func (u *textUtil) searchIgnoreCase(ss []rune, sub []rune, start int) int {
 func (u *textUtil) IndexIgnoreCase(s, sub string) int {
 	return u.searchIgnoreCase([]rune(s), []rune(sub), 0)
 }
+
+// 忽略大小写查找s是否包含sub
+func (u *textUtil) ContainsIgnoreCase(s, sub string) bool {
+	return u.IndexIgnoreCase(s, sub) >= 0
+}
