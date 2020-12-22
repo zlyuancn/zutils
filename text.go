@@ -153,3 +153,99 @@ func (*textUtil) Watermark(text string, start, end int, watermark string) string
 	}
 	return bs.String()
 }
+
+// 忽略大小写检查字符相等
+func (*textUtil) EqualCharIgnoreCase(c1, c2 int32) bool {
+	if c1 == c2 {
+		return true
+	}
+	switch c1 - c2 {
+	case 32: // a - A
+		return c1 >= 'a' && c1 <= 'z'
+	case -32: // A - a
+		return c1 >= 'A' && c1 <= 'Z'
+	}
+	return false
+}
+
+// 忽略大小写检查文本相等
+func (u *textUtil) EqualIgnoreCase(s1, s2 string) bool {
+	if s1 == s2 {
+		return true
+	}
+
+	r1 := []rune(s1)
+	r2 := []rune(s2)
+	if len(r1) != len(r2) {
+		return false
+	}
+
+	for i, r := range r1 {
+		if !u.EqualCharIgnoreCase(r, r2[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+// 忽略大小写替换所有文本
+func (u *textUtil) ReplaceAllIgnoreCase(s, old, new string) string {
+	return u.ReplaceIgnoreCase(s, old, new, -1)
+}
+
+// 替换n次忽略大小写匹配的文本
+func (u *textUtil) ReplaceIgnoreCase(s, old, new string, n int) string {
+	if n == 0 || old == new || old == "" {
+		return s
+	}
+
+	ss := []rune(s)
+	sub := []rune(old)
+	var buff bytes.Buffer
+	var num int
+	for offset := 0; offset < len(ss); {
+		start := u.searchIgnoreCase(ss, sub, offset)
+		if start > -1 {
+			buff.WriteString(string(ss[offset:start]))
+			buff.WriteString(new)
+			offset = start + len(sub)
+			num++
+		}
+
+		if start == -1 || num == n {
+			buff.WriteString(string(ss[offset:]))
+			break
+		}
+	}
+	return buff.String()
+}
+
+// 忽略大小写查找第一个匹配sub的文本所在位置, 如果不存在返回-1
+func (u *textUtil) searchIgnoreCase(ss []rune, sub []rune, start int) int {
+	if len(ss)-start < len(sub) {
+		return -1
+	}
+
+	var has bool
+	// 查找开头
+	for i := start; i < len(ss); i++ {
+		if u.EqualCharIgnoreCase(ss[i], sub[0]) {
+			start, has = i, true
+			break
+		}
+	}
+	if !has {
+		return -1
+	}
+	for i := 1; i < len(sub); i++ {
+		if !u.EqualCharIgnoreCase(ss[start+i], sub[i]) {
+			return u.searchIgnoreCase(ss, sub, start+1)
+		}
+	}
+	return start
+}
+
+// 忽略大小写查找第一个匹配sub的文本所在位置, 如果不存在返回-1
+func (u *textUtil) IndexIgnoreCase(s, sub string) int {
+	return u.searchIgnoreCase([]rune(s), []rune(sub), 0)
+}
