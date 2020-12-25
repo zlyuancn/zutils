@@ -139,10 +139,17 @@ func (u *reflectUtil) structIsZero(r_v reflect.Value) bool {
 	return true
 }
 
-func (u *reflectUtil) arrayIsZero(r_v reflect.Value) bool {
-	num := r_v.Len()
+func (u *reflectUtil) arrayIsZero(rv reflect.Value) bool {
+	num := rv.Len()
 	for i := 0; i < num; i++ {
-		value := r_v.Index(i)
+		value := rv.Index(i)
+		switch value.Kind() {
+		case reflect.Ptr, reflect.Interface:
+			if value.Interface() != nil {
+				return false
+			}
+			continue
+		}
 		if !u.IsZero(value.Interface()) {
 			return false
 		}
