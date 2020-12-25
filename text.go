@@ -254,3 +254,13 @@ func (u *textUtil) IndexIgnoreCase(s, sub string) int {
 func (u *textUtil) ContainsIgnoreCase(s, sub string) bool {
 	return u.IndexIgnoreCase(s, sub) >= 0
 }
+
+// 忽略大小写测试文本s是否以prefix开头
+func (u *textUtil) HasPrefixIgnoreCase(s, prefix string) bool {
+	return len(s) >= len(prefix) && u.EqualIgnoreCase(s[0:len(prefix)], prefix)
+}
+
+// 忽略大小写测试文本s是否以suffix结束
+func (u *textUtil) HasSuffixIgnoreCase(s, suffix string) bool {
+	return len(s) >= len(suffix) && u.EqualIgnoreCase(s[len(s)-len(suffix):], suffix)
+}
