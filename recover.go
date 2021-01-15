@@ -17,7 +17,7 @@ var Recover = new(recoverCli)
 
 type recoverCli struct{}
 
-func (*recoverCli) WarpCall(fn func() error) (err error) {
+func (*recoverCli) WrapCall(fn func() error) (err error) {
 	// 包装执行, 拦截panic
 	defer func() {
 		e := recover()
