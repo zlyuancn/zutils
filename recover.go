@@ -30,7 +30,7 @@ func (*recoverCli) WarpCall(fn func() error) (err error) {
 		case string:
 			err = errors.New(v)
 		default:
-			err = errors.New(fmt.Sprint(err))
+			err = errors.New(fmt.Sprint(e))
 		}
 	}()
 
