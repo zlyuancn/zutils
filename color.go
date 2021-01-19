@@ -8,25 +8,32 @@
 
 package zutils
 
-var Color = new(colorUtil)
-
-type colorUtil struct{}
+var Color = &colorUtil{
+	Default: 48,
+	Red:     49,
+	Green:   50,
+	Yellow:  51,
+	Blue:    52,
+	Magenta: 53,
+	Cyan:    54,
+	Write:   55,
+}
 
 type ColorType byte
 
-const (
-	ColorDefault = iota + '0' // 默认
-	ColorRed                  // 红
-	ColorGreen                // 绿
-	ColorYellow               // 黄
-	ColorBlue                 // 蓝
-	ColorMagenta              // 紫
-	ColorCyan                 // 深绿
-	ColorWrite                // 灰色
-)
+type colorUtil struct {
+	Default ColorType // 默认
+	Red     ColorType // 红
+	Green   ColorType // 绿
+	Yellow  ColorType // 黄
+	Blue    ColorType // 蓝
+	Magenta ColorType // 紫
+	Cyan    ColorType // 深绿
+	Write   ColorType // 灰色
+}
 
 func (*colorUtil) MakeColorText(color ColorType, text string) string {
-	if color == ColorDefault {
+	if color == Color.Default {
 		return text
 	}
 	bs := make([]byte, 9+len(text))
