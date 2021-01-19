@@ -125,7 +125,7 @@ func (u *randUtil) RandTextOfConfig(conf *TextConfig, length int) string {
 			if v < l {
 				out_buff.WriteByte(data[v])
 			} else {
-				out_buff.WriteString(string(int(v - l + chinese_start)))
+				out_buff.WriteString(string(rune(v - l + chinese_start)))
 			}
 		})
 	} else {
