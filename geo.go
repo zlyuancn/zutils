@@ -146,11 +146,11 @@ func (u *geoUtil) GeoIsInsideChina(lon, lat float64) bool {
 		{131.266200, 44.892200, 137.022700, 42.569200},
 	}
 	for _, inRect := range InSideRectangle {
-		if !u.InGeoRectangle(lon, lat, inRect) {
+		if !u.inGeoRectangle(lon, lat, inRect) {
 			continue
 		}
 		for _, outRect := range OutSideRectangle {
-			if u.InGeoRectangle(lon, lat, outRect) {
+			if u.inGeoRectangle(lon, lat, outRect) {
 				return false
 			}
 		}
@@ -160,7 +160,7 @@ func (u *geoUtil) GeoIsInsideChina(lon, lat float64) bool {
 }
 
 // 判断点是否在一个矩形内, rectangle{左上经度, 左上纬度, 右下经度, 右下纬度}
-func (*geoUtil) InGeoRectangle(lon, lat float64, rectangle []float64) bool {
+func (*geoUtil) inGeoRectangle(lon, lat float64, rectangle []float64) bool {
 	if len(rectangle) != 4 {
 		return false
 	}
@@ -168,4 +168,63 @@ func (*geoUtil) InGeoRectangle(lon, lat float64, rectangle []float64) bool {
 		lat <= math.Max(rectangle[1], rectangle[3]) &&
 		math.Min(rectangle[0], rectangle[2]) <= lon &&
 		lon <= math.Max(rectangle[0], rectangle[2])
+}
+
+// 判断点是否在一个多边形内
+func (u *geoUtil) Contains(lon, lat float64, polygonPoints [][]float64) bool {
+	if len(polygonPoints) < 3 {
+		return false
+	}
+
+	start := len(polygonPoints) - 1
+	end := 0
+
+	contains := u.intersectsWithRayCast(lon, lat, polygonPoints[start], polygonPoints[end])
+
+	for i := 1; i < len(polygonPoints); i++ {
+		if u.intersectsWithRayCast(lon, lat, polygonPoints[i-1], polygonPoints[i]) {
+			contains = !contains
+		}
+	}
+
+	return contains
+}
+
+// 射线相交检查
+func (*geoUtil) intersectsWithRayCast(lon, lat float64, start []float64, end []float64) bool {
+	lonStart, latStart := start[0], start[1]
+	lonEnd, latEnd := end[0], end[1]
+
+	if lonStart > lonEnd {
+		lonStart, latStart, lonEnd, latEnd = lonEnd, latEnd, lonStart, latStart
+	}
+
+	for lon == lonStart || lon == lonEnd {
+		lon = math.Nextafter(lon, math.Inf(1))
+	}
+
+	if lon < lonStart || lon > lonEnd {
+		return false
+	}
+
+	if latStart > latEnd {
+		if lat > latStart {
+			return false
+		}
+		if lat < latEnd {
+			return true
+		}
+	} else {
+		if lat > latEnd {
+			return false
+		}
+		if lat < latStart {
+			return true
+		}
+	}
+
+	raySlope := (lon - lonStart) / (lat - latStart)
+	diagSlope := (lonEnd - lonStart) / (latEnd - latStart)
+
+	return raySlope >= diagSlope
 }
