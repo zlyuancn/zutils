@@ -8,8 +8,7 @@ require (
 	github.com/go-playground/universal-translator v0.17.0
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/stretchr/testify v1.6.1
-	github.com/vmihailenco/msgpack v4.0.4+incompatible
+	github.com/vmihailenco/msgpack/v5 v5.1.4
 	golang.org/x/text v0.3.4
-	google.golang.org/appengine v1.6.7 // indirect
 	gopkg.in/ugjka/go-tz.v2 v2.0.12
 )

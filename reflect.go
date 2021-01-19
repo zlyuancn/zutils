@@ -15,7 +15,7 @@ import (
 	"reflect"
 	"unsafe"
 
-	"github.com/vmihailenco/msgpack"
+	"github.com/vmihailenco/msgpack/v5"
 )
 
 var Reflect = new(reflectUtil)
@@ -25,12 +25,16 @@ type reflectUtil struct{}
 // 深拷贝, dst必须传入指针
 func (*reflectUtil) DeepCopy(dst, src interface{}) error {
 	var buf bytes.Buffer
-	err := msgpack.NewEncoder(&buf).Encode(src)
+	enc := msgpack.NewEncoder(&buf)
+	enc.SetCustomStructTag("json") // 如果没有 msgpack 标记, 使用 json 标记
+	err := enc.Encode(src)
 	if err != nil {
 		return err
 	}
 
-	return msgpack.NewDecoder(bytes.NewReader(buf.Bytes())).Decode(dst)
+	dec := msgpack.NewDecoder(bytes.NewReader(buf.Bytes()))
+	dec.SetCustomStructTag("json") // 如果没有 msgpack 标记, 使用 json 标记
+	return dec.Decode(dst)
 }
 
 // 从获取结构体的字段名, 如果tag存在则优先取tag的值
