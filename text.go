@@ -234,7 +234,7 @@ func (u *textUtil) searchIgnoreCase(ss []rune, sub []rune, start int) int {
 			break
 		}
 	}
-	if !has {
+	if !has || len(ss)-start < len(sub) {
 		return -1
 	}
 	for i := 1; i < len(sub); i++ {
