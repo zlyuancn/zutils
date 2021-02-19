@@ -28,7 +28,7 @@ func (u *regexUtil) MakeRegexEscapeString(text string) string {
 	return u.escape.ReplaceAllString(text, `\$1`)
 }
 
-// 将正则表达式视为基础匹配语法, ?表示0或1个值, *表示任何数量的值
+// 将正则表达式转为为基础匹配语法, ?表示0或1个值, *表示任何数量的值
 func (u *regexUtil) MakeRegexSimpleEscapeString(text string) string {
 	text = u.escapeSimple.ReplaceAllString(text, `\$1`)
 	text = strings.ReplaceAll(text, "?", ".?")
