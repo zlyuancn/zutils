@@ -10,7 +10,9 @@ package zutils
 
 import (
 	"fmt"
+	"reflect"
 	"strconv"
+	"unsafe"
 
 	"golang.org/x/text/encoding"
 	"golang.org/x/text/encoding/simplifiedchinese"
@@ -151,4 +153,20 @@ func (*convertUtil) Uint16ToBytes(v uint16) []byte {
 // bytes转为uint16, 从右边开始读取
 func (*convertUtil) BytesToUint16(b []byte) uint16 {
 	return uint16(b[1]) | uint16(b[0])<<8
+}
+
+// string转bytes, 转换后的bytes禁止写, 否则产生运行故障
+func (*convertUtil) StringToBytes(s string) []byte {
+	sh := (*reflect.StringHeader)(unsafe.Pointer(&s))
+	bh := reflect.SliceHeader{
+		Data: sh.Data,
+		Len:  sh.Len,
+		Cap:  sh.Len,
+	}
+	return *(*[]byte)(unsafe.Pointer(&bh))
+}
+
+// bytes转string
+func (*convertUtil) BytesToString(b []byte) string {
+	return *(*string)(unsafe.Pointer(&b))
 }
