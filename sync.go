@@ -13,11 +13,11 @@ import (
 )
 
 var Sync = &syncUtil{
-	autoIncr: new(autoIncr),
+	autoIncr: new(AutoIncr),
 }
 
 type syncUtil struct {
-	autoIncr *autoIncr
+	autoIncr *AutoIncr
 }
 
 // 执行fn, 如果ctx结束返回err, 注意: ctx结束不会打断已经开始执行的fn

@@ -12,13 +12,16 @@ import (
 	"sync/atomic"
 )
 
-type autoIncr struct {
-	v uint64
-}
+type AutoIncr uint64
 
 // 下一个数, 第一个数是1
-func (m *autoIncr) Next() uint64 {
-	return atomic.AddUint64(&m.v, 1)
+func (a *AutoIncr) Next() uint64 {
+	return atomic.AddUint64((*uint64)(a), 1)
+}
+
+// 创建一个自增计数器
+func (u *syncUtil) NewAutoIncr() *AutoIncr {
+	return new(AutoIncr)
 }
 
 // 获取自增寄存器下一个数
