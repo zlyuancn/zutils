@@ -36,6 +36,7 @@ func newVerify() *validateUtil {
 	}
 	_ = zh_translations.RegisterDefaultTranslations(v.validate, validateTrans)
 
+	v.validate.SetTagName("bind")
 	_ = v.validate.RegisterValidation("regex", v.validateRegex)
 	_ = v.validate.RegisterValidation("time", v.validateTime)
 	_ = v.validate.RegisterValidation("date", v.validateDate)
@@ -88,7 +89,7 @@ func (u *validateUtil) translateValidateErr(err error) error {
 	return nil
 }
 
-// 校验结构体
+// 校验结构体, tag名为bind
 func (u *validateUtil) ValidateStruct(a interface{}) error {
 	err := u.validate.Struct(a)
 	return u.translateValidateErr(err)
