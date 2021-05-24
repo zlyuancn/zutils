@@ -11,6 +11,7 @@ package zutils
 import (
 	"errors"
 	"regexp"
+	"time"
 
 	zhongwen "github.com/go-playground/locales/zh"
 	ut "github.com/go-playground/universal-translator"
@@ -37,6 +38,7 @@ func newVerify() *validateUtil {
 
 	_ = v.validate.RegisterValidation("regex", v.validateRegex)
 	_ = v.validate.RegisterValidation("time", v.validateTime)
+	_ = v.validate.RegisterValidation("date", v.validateDate)
 	return v
 }
 
@@ -56,6 +58,18 @@ func (*validateUtil) validateTime(f validator.FieldLevel) bool {
 	text := f.Field().String()
 
 	_, err := Time.TextToTimeOfLayout(text, layout)
+	return err == nil
+}
+
+// 日期匹配
+func (*validateUtil) validateDate(f validator.FieldLevel) bool {
+	layout := f.Param()
+	if layout == "" {
+		layout = "2006-01-02"
+	}
+	text := f.Field().String()
+
+	_, err := time.ParseInLocation(layout, text, time.Local)
 	return err == nil
 }
 
