@@ -170,3 +170,46 @@ func (*convertUtil) StringToBytes(s string) []byte {
 func (*convertUtil) BytesToString(b []byte) string {
 	return *(*string)(unsafe.Pointer(&b))
 }
+
+// struct转map
+func (u *convertUtil) StructToMap(a interface{}) map[string]interface{} {
+	aValue := reflect.ValueOf(a)
+	for aValue.Kind() == reflect.Ptr || aValue.Kind() == reflect.Interface {
+		aValue = aValue.Elem()
+	}
+	if aValue.Kind() != reflect.Struct {
+		panic(fmt.Sprintf("input value must a struct type, but got %s type.", aValue.Kind().String()))
+	}
+
+	aType := aValue.Type()
+
+	num := aValue.NumField()
+	result := make(map[string]interface{}, num)
+	for i := 0; i < num; i++ {
+		field := aType.Field(i)
+		if field.PkgPath != "" {
+			continue
+		}
+
+		name, ok := field.Tag.Lookup("json")
+		if !ok {
+			name = field.Name
+		} else if name == "" || name == "-" {
+			continue
+		}
+
+		switch field.Type.Kind() {
+		case reflect.Struct:
+			result[name] = u.StructToMap(aValue.Field(i).Interface())
+			continue
+		case reflect.Ptr, reflect.Interface:
+			kind := field.Type.Elem().Kind()
+			if kind == reflect.Struct {
+				result[name] = u.StructToMap(aValue.Field(i).Interface())
+			}
+			continue
+		}
+		result[name] = aValue.Field(i).Interface()
+	}
+	return result
+}
