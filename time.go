@@ -103,6 +103,11 @@ func (u *timeUtil) TimeToText(t time.Time) string {
 	return t.Format(u.Layout)
 }
 
+// 将时间转为日期样式的字符串
+func (u *timeUtil) TimeToDateText(t time.Time) string {
+	return t.Format(u.LayoutDate)
+}
+
 // 将时间转为指定样式的字符串
 func (*timeUtil) TimeToTextOfLayout(t time.Time, layout string) string {
 	return t.Format(layout)
@@ -118,6 +123,11 @@ func (u *timeUtil) StampToText(stamp int64) string {
 	return time.Unix(0, stamp*1e6).Format(u.Layout)
 }
 
+// 将毫秒级时间戳转为日期样式的字符串
+func (u *timeUtil) StampToDateText(stamp int64) string {
+	return time.Unix(0, stamp*1e6).Format(u.LayoutDate)
+}
+
 // 将毫秒级时间戳转为指定样式的字符串
 func (*timeUtil) StampToTextOfLayout(stamp int64, layout string) string {
 	return time.Unix(0, stamp*1e6).Format(layout)
@@ -128,6 +138,11 @@ func (u *timeUtil) TextToTime(text string) (time.Time, error) {
 	return time.ParseInLocation(u.Layout, text, time.Local)
 }
 
+// 将日期样式时间文本转为时间
+func (u *timeUtil) DateTextToTime(text string) (time.Time, error) {
+	return time.ParseInLocation(u.LayoutDate, text, time.Local)
+}
+
 // 将指定样式时间文本转为时间
 func (*timeUtil) TextToTimeOfLayout(text, layout string) (time.Time, error) {
 	return time.ParseInLocation(layout, text, time.Local)
@@ -136,6 +151,11 @@ func (*timeUtil) TextToTimeOfLayout(text, layout string) (time.Time, error) {
 // 将标准样式时间文本转为毫秒级时间戳
 func (u *timeUtil) TextToStamp(text string) (int64, error) {
 	return u.TextToStampOfLayout(text, u.Layout)
+}
+
+// 将日期样式时间文本转为毫秒级时间戳
+func (u *timeUtil) DateTextToStamp(text string) (int64, error) {
+	return u.TextToStampOfLayout(text, u.LayoutDate)
 }
 
 // 将时间文本转为毫秒级时间戳
