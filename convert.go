@@ -156,8 +156,8 @@ func (*convertUtil) BytesToUint16(b []byte) uint16 {
 }
 
 // string转bytes, 转换后的bytes禁止写, 否则产生运行故障
-func (*convertUtil) StringToBytes(s string) []byte {
-	sh := (*reflect.StringHeader)(unsafe.Pointer(&s))
+func (*convertUtil) StringToBytes(s *string) []byte {
+	sh := (*reflect.StringHeader)(unsafe.Pointer(s))
 	bh := reflect.SliceHeader{
 		Data: sh.Data,
 		Len:  sh.Len,
@@ -167,8 +167,8 @@ func (*convertUtil) StringToBytes(s string) []byte {
 }
 
 // bytes转string
-func (*convertUtil) BytesToString(b []byte) string {
-	return *(*string)(unsafe.Pointer(&b))
+func (*convertUtil) BytesToString(b []byte) *string {
+	return (*string)(unsafe.Pointer(&b))
 }
 
 // struct转map
