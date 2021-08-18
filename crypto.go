@@ -27,12 +27,12 @@ type cryptoUtil struct{}
 
 func (*cryptoUtil) Md5(text string) string {
 	c := md5.New()
-	c.Write([]byte(text))
+	c.Write(Convert.StringToBytes(&text))
 	return hex.EncodeToString(c.Sum(nil))
 }
 func (*cryptoUtil) Md5_16(text string) string {
 	c := md5.New()
-	c.Write([]byte(text))
+	c.Write(Convert.StringToBytes(&text))
 	return hex.EncodeToString(c.Sum(nil))[8:24]
 }
 
@@ -49,23 +49,23 @@ func (*cryptoUtil) Md5_16Bytes(text []byte) []byte {
 
 func (*cryptoUtil) Sha1(text string) string {
 	c := sha1.New()
-	c.Write([]byte(text))
+	c.Write(Convert.StringToBytes(&text))
 	return hex.EncodeToString(c.Sum(nil))
 }
 func (*cryptoUtil) Sha224(text string) string {
-	v := sha256.Sum224([]byte(text))
+	v := sha256.Sum224(Convert.StringToBytes(&text))
 	return hex.EncodeToString(v[:])
 }
 func (*cryptoUtil) Sha256(text string) string {
-	v := sha256.Sum256([]byte(text))
+	v := sha256.Sum256(Convert.StringToBytes(&text))
 	return hex.EncodeToString(v[:])
 }
 func (*cryptoUtil) Sha384(text string) string {
-	v := sha512.Sum384([]byte(text))
+	v := sha512.Sum384(Convert.StringToBytes(&text))
 	return hex.EncodeToString(v[:])
 }
 func (*cryptoUtil) Sha512(text string) string {
-	v := sha512.Sum512([]byte(text))
+	v := sha512.Sum512(Convert.StringToBytes(&text))
 	return hex.EncodeToString(v[:])
 }
 
@@ -87,23 +87,23 @@ func (*cryptoUtil) Sha384Bytes(text []byte) []byte {
 	return v[:]
 }
 func (*cryptoUtil) Sha512Bytes(text []byte) []byte {
-	v := sha512.Sum512([]byte(text))
+	v := sha512.Sum512(text)
 	return v[:]
 }
 
 func (*cryptoUtil) Fnv32a(text string) uint32 {
 	c := fnv.New32a()
-	_, _ = c.Write([]byte(text))
+	_, _ = c.Write(Convert.StringToBytes(&text))
 	return c.Sum32()
 }
 func (*cryptoUtil) Fnv64a(text string) uint64 {
 	c := fnv.New64a()
-	_, _ = c.Write([]byte(text))
+	_, _ = c.Write(Convert.StringToBytes(&text))
 	return c.Sum64()
 }
 func (*cryptoUtil) Fnv128a(text string) string {
 	c := fnv.New128a()
-	c.Write([]byte(text))
+	c.Write(Convert.StringToBytes(&text))
 	return hex.EncodeToString(c.Sum(nil))
 }
 
@@ -125,17 +125,17 @@ func (*cryptoUtil) Fnv128aBytes(text []byte) []byte {
 
 func (*cryptoUtil) Fnv32(text string) uint32 {
 	c := fnv.New32()
-	_, _ = c.Write([]byte(text))
+	_, _ = c.Write(Convert.StringToBytes(&text))
 	return c.Sum32()
 }
 func (*cryptoUtil) Fnv64(text string) uint64 {
 	c := fnv.New64()
-	_, _ = c.Write([]byte(text))
+	_, _ = c.Write(Convert.StringToBytes(&text))
 	return c.Sum64()
 }
 func (*cryptoUtil) Fnv128(text string) string {
 	c := fnv.New128()
-	c.Write([]byte(text))
+	c.Write(Convert.StringToBytes(&text))
 	return hex.EncodeToString(c.Sum(nil))
 }
 
@@ -156,23 +156,23 @@ func (*cryptoUtil) Fnv128Bytes(text []byte) []byte {
 }
 
 func (*cryptoUtil) HmacMd5(text, key string) string {
-	c := hmac.New(md5.New, []byte(key))
-	c.Write([]byte(text))
+	c := hmac.New(md5.New, Convert.StringToBytes(&key))
+	c.Write(Convert.StringToBytes(&text))
 	return hex.EncodeToString(c.Sum(nil))
 }
 func (*cryptoUtil) HmacSha1(text, key string) string {
-	c := hmac.New(sha1.New, []byte(key))
-	c.Write([]byte(text))
+	c := hmac.New(sha1.New, Convert.StringToBytes(&key))
+	c.Write(Convert.StringToBytes(&text))
 	return hex.EncodeToString(c.Sum(nil))
 }
 func (*cryptoUtil) HmacSha256(text, key string) string {
-	c := hmac.New(sha256.New, []byte(key))
-	c.Write([]byte(text))
+	c := hmac.New(sha256.New, Convert.StringToBytes(&key))
+	c.Write(Convert.StringToBytes(&text))
 	return hex.EncodeToString(c.Sum(nil))
 }
 func (*cryptoUtil) HmacSha512(text, key string) string {
-	c := hmac.New(sha512.New, []byte(key))
-	c.Write([]byte(text))
+	c := hmac.New(sha512.New, Convert.StringToBytes(&key))
+	c.Write(Convert.StringToBytes(&text))
 	return hex.EncodeToString(c.Sum(nil))
 }
 
@@ -198,7 +198,7 @@ func (*cryptoUtil) HmacSha512Bytes(text, key []byte) []byte {
 }
 
 func (*cryptoUtil) Base64Encode(text string) string {
-	return base64.StdEncoding.EncodeToString([]byte(text))
+	return base64.StdEncoding.EncodeToString(Convert.StringToBytes(&text))
 }
 func (*cryptoUtil) Base64Decode(text string) (string, error) {
 	bs, err := base64.StdEncoding.DecodeString(text)
@@ -224,7 +224,7 @@ func (*cryptoUtil) UrlDecode(text string) (string, error) {
 }
 
 func (*cryptoUtil) CRC32IEEE(text string) uint32 {
-	return crc32.ChecksumIEEE([]byte(text))
+	return crc32.ChecksumIEEE(Convert.StringToBytes(&text))
 }
 func (*cryptoUtil) CRC32IEEEBytes(text []byte) uint32 {
 	return crc32.ChecksumIEEE(text)
