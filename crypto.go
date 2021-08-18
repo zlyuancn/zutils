@@ -122,6 +122,38 @@ func (*cryptoUtil) Fnv128aBytes(text []byte) []byte {
 	return c.Sum(nil)
 }
 
+func (*cryptoUtil) Fnv32(text string) uint32 {
+	c := fnv.New32()
+	_, _ = c.Write([]byte(text))
+	return c.Sum32()
+}
+func (*cryptoUtil) Fnv64(text string) uint64 {
+	c := fnv.New64()
+	_, _ = c.Write([]byte(text))
+	return c.Sum64()
+}
+func (*cryptoUtil) Fnv128(text string) string {
+	c := fnv.New128()
+	c.Write([]byte(text))
+	return hex.EncodeToString(c.Sum(nil))
+}
+
+func (*cryptoUtil) Fnv32Bytes(text []byte) uint32 {
+	c := fnv.New32()
+	_, _ = c.Write(text)
+	return c.Sum32()
+}
+func (*cryptoUtil) Fnv64Bytes(text []byte) uint64 {
+	c := fnv.New64()
+	_, _ = c.Write(text)
+	return c.Sum64()
+}
+func (*cryptoUtil) Fnv128Bytes(text []byte) []byte {
+	c := fnv.New128()
+	c.Write(text)
+	return c.Sum(nil)
+}
+
 func (*cryptoUtil) HmacMd5(text, key string) string {
 	c := hmac.New(md5.New, []byte(key))
 	c.Write([]byte(text))
