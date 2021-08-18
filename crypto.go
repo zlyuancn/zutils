@@ -202,7 +202,10 @@ func (*cryptoUtil) Base64Encode(text string) string {
 }
 func (*cryptoUtil) Base64Decode(text string) (string, error) {
 	bs, err := base64.StdEncoding.DecodeString(text)
-	return string(bs), err
+	if err != nil {
+		return "", err
+	}
+	return *Convert.BytesToString(bs), nil
 }
 
 func (*cryptoUtil) Base64EncodeBytes(text []byte) []byte {

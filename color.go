@@ -41,5 +41,5 @@ func (*colorUtil) MakeColorText(color ColorType, text string) string {
 	bs[3] = byte(color)
 	copy(bs[5:len(bs)-4], text)
 	copy(bs[len(bs)-4:], "\x1b[0m")
-	return string(bs)
+	return *Convert.BytesToString(bs)
 }
