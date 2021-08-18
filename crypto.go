@@ -16,6 +16,7 @@ import (
 	"crypto/sha512"
 	"encoding/base64"
 	"encoding/hex"
+	"hash/crc32"
 	"hash/fnv"
 	"net/url"
 )
@@ -220,4 +221,11 @@ func (*cryptoUtil) UrlEncode(text string) string {
 }
 func (*cryptoUtil) UrlDecode(text string) (string, error) {
 	return url.QueryUnescape(text)
+}
+
+func (*cryptoUtil) CRC32IEEE(text string) uint32 {
+	return crc32.ChecksumIEEE([]byte(text))
+}
+func (*cryptoUtil) CRC32IEEEBytes(text []byte) uint32 {
+	return crc32.ChecksumIEEE(text)
 }
