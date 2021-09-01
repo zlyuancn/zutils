@@ -64,10 +64,10 @@ func (r *ReflectMethod) CallSlice3(in ...interface{}) (interface{}, interface{},
 	return result[0], result[1], result[2]
 }
 
-// GetMethods 获取a的方法列表, a必须是一个带指针的结构体
+// GetMethods 获取a的方法列表
 //
 //  example:
-//  type A struct{}
+//  type A int
 //  func (*A) A(a int) int { return a + 1 }
 //  func (A) B(b int) int  { return b + b }
 //  func main() {
@@ -77,17 +77,6 @@ func (r *ReflectMethod) CallSlice3(in ...interface{}) (interface{}, interface{},
 //  }
 func (*reflectUtil) GetMethods(a interface{}) map[string]*ReflectMethod {
 	aType := reflect.TypeOf(a)
-	if aType.Kind() != reflect.Ptr {
-		panic("a must be a structure with a pointer")
-	}
-	aTypeElem := aType.Elem()
-	if aTypeElem.Kind() == reflect.Invalid {
-		panic("a is invalid, a may be not initialized")
-	}
-	if aTypeElem.Kind() != reflect.Struct {
-		panic("a must a struct")
-	}
-
 	aValue := reflect.ValueOf(a)
 	out := make(map[string]*ReflectMethod)
 	for i := 0; i < aType.NumMethod(); i++ {
