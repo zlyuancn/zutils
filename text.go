@@ -291,3 +291,38 @@ func (u *textUtil) HasPrefixIgnoreCase(s, prefix string) bool {
 func (u *textUtil) HasSuffixIgnoreCase(s, suffix string) bool {
 	return len(s) >= len(suffix) && u.EqualIgnoreCase(s[len(s)-len(suffix):], suffix)
 }
+
+/**提取中间文本
+  s 原始文本
+  pre 提取数据的前面的数据, 如果为空则从最开头提取
+  suf 提取数据的后面的数据, 如果为空则提取到结尾
+  def 找不到时返回的默认数据
+  greedy 贪婪的, 默认从开头开始查找suf, 如果是贪婪的则从结尾开始查找suf
+*/
+func (u *textUtil) ExtractMiddleText(s, pre, suf, def string, greedy bool) string {
+	var start int  // 开始位置
+	if pre != "" { // 需要查找开始数据
+		k := strings.Index(s, pre)
+		if k == -1 {
+			return def
+		}
+		start = k + len(pre)
+	}
+
+	if suf == "" {
+		return s[start:]
+	}
+
+	// 结束位置
+	var end int
+	if greedy { // 贪婪的从结尾开始查找suf
+		end = strings.LastIndex(s[start:], suf)
+	} else {
+		end = strings.Index(s[start:], suf)
+	}
+	if end == -1 {
+		return def
+	}
+	end += start // 添加偏移
+	return s[start:end]
+}
