@@ -15,12 +15,12 @@ import (
 	"strings"
 )
 
-var Text = new(textUtil)
+var Text = textUtil{}
 
 type textUtil struct{}
 
 // 将文本切割并转换为int类型的切片
-func (*textUtil) SplitToInt(text string, sep string) ([]int, error) {
+func (textUtil) SplitToInt(text string, sep string) ([]int, error) {
 	if text == "" {
 		return []int{}, nil
 	}
@@ -38,7 +38,7 @@ func (*textUtil) SplitToInt(text string, sep string) ([]int, error) {
 }
 
 // 将文本切割并转换为int32类型的切片
-func (*textUtil) SplitToInt32(text string, sep string) ([]int32, error) {
+func (textUtil) SplitToInt32(text string, sep string) ([]int32, error) {
 	if text == "" {
 		return []int32{}, nil
 	}
@@ -56,7 +56,7 @@ func (*textUtil) SplitToInt32(text string, sep string) ([]int32, error) {
 }
 
 // 将文本切割并转换为int64类型的切片
-func (*textUtil) SplitToInt64(text string, sep string) ([]int64, error) {
+func (textUtil) SplitToInt64(text string, sep string) ([]int64, error) {
 	if text == "" {
 		return []int64{}, nil
 	}
@@ -74,7 +74,7 @@ func (*textUtil) SplitToInt64(text string, sep string) ([]int64, error) {
 }
 
 // 将文本切割并转换为float32类型的切片
-func (*textUtil) SplitToFloat32(text string, sep string) ([]float32, error) {
+func (textUtil) SplitToFloat32(text string, sep string) ([]float32, error) {
 	if text == "" {
 		return []float32{}, nil
 	}
@@ -92,7 +92,7 @@ func (*textUtil) SplitToFloat32(text string, sep string) ([]float32, error) {
 }
 
 // 将文本切割并转换为float64类型的切片
-func (*textUtil) SplitToFloat64(text string, sep string) ([]float64, error) {
+func (textUtil) SplitToFloat64(text string, sep string) ([]float64, error) {
 	if text == "" {
 		return []float64{}, nil
 	}
@@ -110,7 +110,7 @@ func (*textUtil) SplitToFloat64(text string, sep string) ([]float64, error) {
 }
 
 // 将文本切割并转换为map(文本, 组分隔符, kv分隔符)
-func (*textUtil) SplitToMap(text string, groupSep string, kvSep string) (map[string]string, error) {
+func (textUtil) SplitToMap(text string, groupSep string, kvSep string) (map[string]string, error) {
 	m := make(map[string]string)
 	if text == "" {
 		return m, nil
@@ -137,7 +137,7 @@ func (*textUtil) SplitToMap(text string, groupSep string, kvSep string) (map[str
 }
 
 // 文本水印, 指定开始位(包含)和结束位(不包含), 下标安全, 放心使用
-func (*textUtil) Watermark(text string, start, end int, watermark string) string {
+func (textUtil) Watermark(text string, start, end int, watermark string) string {
 	rt := []rune(text)
 	if len(rt) <= start {
 		return text
@@ -155,7 +155,7 @@ func (*textUtil) Watermark(text string, start, end int, watermark string) string
 }
 
 // 模糊匹配, ? 表示一个字符, * 表示任意字符串或空字符串
-func (*textUtil) IsMatchWildcard(text string, p string) bool {
+func (textUtil) IsMatchWildcard(text string, p string) bool {
 	m, n := len(text), len(p)
 	dp := make([][]bool, m+1)
 	for i := 0; i <= m; i++ {
@@ -181,8 +181,18 @@ func (*textUtil) IsMatchWildcard(text string, p string) bool {
 	return dp[m][n]
 }
 
+// 模糊匹配, 同 IsMatchWildcard, 只要匹配某一个通配符则返回true
+func (u textUtil) IsMatchWildcardAny(text string, ps ...string) bool {
+	for _, p := range ps {
+		if u.IsMatchWildcard(text, p) {
+			return true
+		}
+	}
+	return false
+}
+
 // 忽略大小写检查字符相等
-func (*textUtil) EqualCharIgnoreCase(c1, c2 int32) bool {
+func (textUtil) EqualCharIgnoreCase(c1, c2 int32) bool {
 	if c1 == c2 {
 		return true
 	}
@@ -196,7 +206,7 @@ func (*textUtil) EqualCharIgnoreCase(c1, c2 int32) bool {
 }
 
 // 忽略大小写检查文本相等
-func (u *textUtil) EqualIgnoreCase(s1, s2 string) bool {
+func (u textUtil) EqualIgnoreCase(s1, s2 string) bool {
 	if s1 == s2 {
 		return true
 	}
@@ -216,12 +226,12 @@ func (u *textUtil) EqualIgnoreCase(s1, s2 string) bool {
 }
 
 // 忽略大小写替换所有文本
-func (u *textUtil) ReplaceAllIgnoreCase(s, old, new string) string {
+func (u textUtil) ReplaceAllIgnoreCase(s, old, new string) string {
 	return u.ReplaceIgnoreCase(s, old, new, -1)
 }
 
 // 替换n次忽略大小写匹配的文本
-func (u *textUtil) ReplaceIgnoreCase(s, old, new string, n int) string {
+func (u textUtil) ReplaceIgnoreCase(s, old, new string, n int) string {
 	if n == 0 || old == new || old == "" {
 		return s
 	}
@@ -248,7 +258,7 @@ func (u *textUtil) ReplaceIgnoreCase(s, old, new string, n int) string {
 }
 
 // 忽略大小写查找第一个匹配sub的文本所在位置, 如果不存在返回-1
-func (u *textUtil) searchIgnoreCase(ss []rune, sub []rune, start int) int {
+func (u textUtil) searchIgnoreCase(ss []rune, sub []rune, start int) int {
 	if len(ss)-start < len(sub) {
 		return -1
 	}
@@ -273,33 +283,35 @@ func (u *textUtil) searchIgnoreCase(ss []rune, sub []rune, start int) int {
 }
 
 // 忽略大小写查找第一个匹配sub的文本所在位置, 如果不存在返回-1
-func (u *textUtil) IndexIgnoreCase(s, sub string) int {
+func (u textUtil) IndexIgnoreCase(s, sub string) int {
 	return u.searchIgnoreCase([]rune(s), []rune(sub), 0)
 }
 
 // 忽略大小写查找s是否包含sub
-func (u *textUtil) ContainsIgnoreCase(s, sub string) bool {
+func (u textUtil) ContainsIgnoreCase(s, sub string) bool {
 	return u.IndexIgnoreCase(s, sub) >= 0
 }
 
 // 忽略大小写测试文本s是否以prefix开头
-func (u *textUtil) HasPrefixIgnoreCase(s, prefix string) bool {
+func (u textUtil) HasPrefixIgnoreCase(s, prefix string) bool {
 	return len(s) >= len(prefix) && u.EqualIgnoreCase(s[0:len(prefix)], prefix)
 }
 
 // 忽略大小写测试文本s是否以suffix结束
-func (u *textUtil) HasSuffixIgnoreCase(s, suffix string) bool {
+func (u textUtil) HasSuffixIgnoreCase(s, suffix string) bool {
 	return len(s) >= len(suffix) && u.EqualIgnoreCase(s[len(s)-len(suffix):], suffix)
 }
 
-/**提取中间文本
-  s 原始文本
-  pre 提取数据的前面的数据, 如果为空则从最开头提取
-  suf 提取数据的后面的数据, 如果为空则提取到结尾
-  def 找不到时返回的默认数据
-  greedy 贪婪的, 默认从开头开始查找suf, 如果是贪婪的则从结尾开始查找suf
+/*
+*提取中间文本
+
+	s 原始文本
+	pre 提取数据的前面的数据, 如果为空则从最开头提取
+	suf 提取数据的后面的数据, 如果为空则提取到结尾
+	def 找不到时返回的默认数据
+	greedy 贪婪的, 默认从开头开始查找suf, 如果是贪婪的则从结尾开始查找suf
 */
-func (u *textUtil) ExtractMiddleText(s, pre, suf, def string, greedy bool) string {
+func (u textUtil) ExtractMiddleText(s, pre, suf, def string, greedy bool) string {
 	var start int  // 开始位置
 	if pre != "" { // 需要查找开始数据
 		k := strings.Index(s, pre)
