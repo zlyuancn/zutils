@@ -1,38 +1,34 @@
 package zutils
 
 import (
-	"embed"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 )
 
-var Embed = embedCli{}
+var TemplateDir = templateDirCli{}
 
-type embedCli struct{}
+type templateDirCli struct{}
 
-type EmbedReleaseDirArgs struct {
-	EmbedFiles       embed.FS                                // embed资源
-	EmbedDirName     string                                  // embed内的文件夹路径
+type TemplateDirReleaseDirArgs struct {
+	TemplateDirName  string                                  // 模板文件夹路径
 	DestDirPath      string                                  // 释放到磁盘的路径
 	CleanDestDirPath bool                                    // 清理目标文件夹, 如果设为true, 会将目标文件夹清空
 	MkdirFn          func(absPath string) error              // 创建文件夹函数, 可以为空
 	WriteFileFn      func(absPath string, data []byte) error // 创建文件函数, 可以为空
 }
 
-// 释放embed资源的指定文件夹到指定路径
-func (e embedCli) ReleaseDir(args EmbedReleaseDirArgs) error {
+// 释放模板文件夹到指定路径
+func (f templateDirCli) ReleaseDir(args TemplateDirReleaseDirArgs) error {
 	// 如果未提供创建文件夹函数，则使用默认的mkdir函数
 	if args.MkdirFn == nil {
-		args.MkdirFn = e.mkdir
+		args.MkdirFn = f.mkdir
 	}
 	// 如果未提供创建文件函数，则使用默认的writeFileFn函数
 	if args.WriteFileFn == nil {
-		args.WriteFileFn = e.writeFileFn
+		args.WriteFileFn = f.writeFileFn
 	}
-	// 去掉embed资源路径中的前导斜杠
-	args.EmbedDirName = strings.TrimPrefix(args.EmbedDirName, "/")
 
 	// 将目标目录路径转化为绝对路径
 	destDirPath := filepath.Clean(args.DestDirPath)
@@ -58,21 +54,21 @@ func (e embedCli) ReleaseDir(args EmbedReleaseDirArgs) error {
 		return fmt.Errorf("创建目标目录失败: %v", err)
 	}
 
-	return e.dispatchDirs(args, args.EmbedDirName)
+	return f.dispatchDirs(args, args.TemplateDirName)
 }
 
-func (e embedCli) dispatchDirs(args EmbedReleaseDirArgs, embedDirPath string) error {
-	dirs, err := args.EmbedFiles.ReadDir(embedDirPath)
+func (f templateDirCli) dispatchDirs(args TemplateDirReleaseDirArgs, templateDirPath string) error {
+	dirs, err := os.ReadDir(templateDirPath)
 	if err != nil {
 		return fmt.Errorf("读取目录资源失败: %v", err)
 	}
 
 	for _, dir := range dirs {
-		path := embedDirPath + "/" + dir.Name()
+		path := templateDirPath + "/" + dir.Name()
 		if dir.IsDir() {
-			err = e.releaseDir(args, path)
+			err = f.releaseDir(args, path)
 		} else {
-			err = e.releaseFile(args, path)
+			err = f.releaseFile(args, path)
 		}
 		if err != nil {
 			return err
@@ -80,10 +76,10 @@ func (e embedCli) dispatchDirs(args EmbedReleaseDirArgs, embedDirPath string) er
 	}
 	return nil
 }
-func (e embedCli) releaseDir(args EmbedReleaseDirArgs, embedDirPath string) error {
-	path := strings.TrimPrefix(embedDirPath, args.EmbedDirName) // 相对路径, 要去掉embed基础路径
-	path = strings.TrimPrefix(path, "/")                        // 要去掉前导斜杠
-	destPath, err := e.dirJoin(args.DestDirPath, path)
+func (f templateDirCli) releaseDir(args TemplateDirReleaseDirArgs, templateDirPath string) error {
+	path := strings.TrimPrefix(templateDirPath, args.TemplateDirName) // 相对路径, 要去掉模板文件夹基础路径
+	path = strings.TrimPrefix(path, "/")                              // 要去掉前导斜杠
+	destPath, err := f.dirJoin(args.DestDirPath, path)
 	if err != nil {
 		return err
 	}
@@ -93,18 +89,18 @@ func (e embedCli) releaseDir(args EmbedReleaseDirArgs, embedDirPath string) erro
 		return err
 	}
 
-	return e.dispatchDirs(args, embedDirPath)
+	return f.dispatchDirs(args, templateDirPath)
 }
 
-func (e embedCli) releaseFile(args EmbedReleaseDirArgs, embedFilePath string) error {
-	data, err := args.EmbedFiles.ReadFile(embedFilePath)
+func (f templateDirCli) releaseFile(args TemplateDirReleaseDirArgs, templateFilePath string) error {
+	data, err := os.ReadFile(templateFilePath)
 	if err != nil {
 		return fmt.Errorf("读取文件资源失败: %v", err)
 	}
 
-	path := strings.TrimPrefix(embedFilePath, args.EmbedDirName) // 相对路径, 要去掉embed基础路径
-	path = strings.TrimPrefix(path, "/")                         // 要去掉前导斜杠
-	destPath, err := e.dirJoin(args.DestDirPath, path)
+	path := strings.TrimPrefix(templateFilePath, args.TemplateDirName) // 相对路径, 要去掉模板文件夹基础路径
+	path = strings.TrimPrefix(path, "/")                               // 要去掉前导斜杠
+	destPath, err := f.dirJoin(args.DestDirPath, path)
 	if err != nil {
 		return err
 	}
@@ -112,15 +108,15 @@ func (e embedCli) releaseFile(args EmbedReleaseDirArgs, embedFilePath string) er
 	return args.WriteFileFn(destPath, data)
 }
 
-func (embedCli) mkdir(path string) error {
+func (templateDirCli) mkdir(path string) error {
 	return os.MkdirAll(path, 0755)
 }
 
-func (embedCli) writeFileFn(path string, data []byte) error {
+func (templateDirCli) writeFileFn(path string, data []byte) error {
 	return os.WriteFile(path, data, 0644)
 }
 
-func (embedCli) dirJoin(path1, path2 string) (string, error) {
+func (templateDirCli) dirJoin(path1, path2 string) (string, error) {
 	// 处理路径分隔符
 	path1 = strings.ReplaceAll(path1, "\\", "/")
 	path2 = strings.ReplaceAll(path2, "\\", "/")
