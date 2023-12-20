@@ -1,5 +1,6 @@
 package zutils
 
+// Deprecated: 建议使用 lo.Max / lo.Min  eg: https://github.com/samber/lo
 var Math = new(mathUtil)
 
 type mathUtil struct{}

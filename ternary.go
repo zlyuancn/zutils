@@ -8,6 +8,7 @@
 
 package zutils
 
+// Deprecated: 建议使用 lo.Ternary   eg: https://github.com/samber/lo
 var Ternary = &ternaryUtil{}
 
 type ternaryUtil struct{}

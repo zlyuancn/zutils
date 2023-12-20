@@ -1,6 +1,6 @@
 module github.com/zlyuancn/zutils
 
-go 1.15
+go 1.20
 
 require (
 	github.com/go-playground/locales v0.13.0

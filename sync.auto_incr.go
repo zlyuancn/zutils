@@ -19,6 +19,10 @@ func (a *AutoIncr) Next() uint64 {
 	return atomic.AddUint64((*uint64)(a), 1)
 }
 
+func (a *AutoIncr) Incr(v uint64) uint64 {
+	return atomic.AddUint64((*uint64)(a), v)
+}
+
 // 创建一个自增计数器
 func (u *syncUtil) NewAutoIncr() *AutoIncr {
 	return new(AutoIncr)

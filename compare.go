@@ -1,5 +1,6 @@
 package zutils
 
+// Deprecated: 建议使用 lo.Contains  eg: https://github.com/samber/lo
 var Compare = new(compareUtil)
 
 type compareUtil struct{}

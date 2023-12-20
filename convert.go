@@ -30,6 +30,7 @@ type convertUtil struct {
 	defaultGBKDecoder *encoding.Decoder
 }
 
+// Deprecated: 建议使用 lo.Map  eg: https://github.com/samber/lo
 func (*convertUtil) IntsToInt64(v []int) []int64 {
 	out := make([]int64, len(v))
 	for i, a := range v {
@@ -37,6 +38,7 @@ func (*convertUtil) IntsToInt64(v []int) []int64 {
 	}
 	return out
 }
+// Deprecated: 建议使用 lo.Map  eg: https://github.com/samber/lo
 func (*convertUtil) IntsToString(v []int) []string {
 	out := make([]string, len(v))
 	for i, a := range v {
@@ -44,6 +46,7 @@ func (*convertUtil) IntsToString(v []int) []string {
 	}
 	return out
 }
+// Deprecated: 建议使用 lo.Map  eg: https://github.com/samber/lo
 func (*convertUtil) IntsToInterface(v []int) []interface{} {
 	out := make([]interface{}, len(v))
 	for i, a := range v {
@@ -52,6 +55,7 @@ func (*convertUtil) IntsToInterface(v []int) []interface{} {
 	return out
 }
 
+// Deprecated: 建议使用 lo.Map  eg: https://github.com/samber/lo
 func (*convertUtil) Int64sToInt(v []int64) []int {
 	out := make([]int, len(v))
 	for i, a := range v {
@@ -59,6 +63,7 @@ func (*convertUtil) Int64sToInt(v []int64) []int {
 	}
 	return out
 }
+// Deprecated: 建议使用 lo.Map  eg: https://github.com/samber/lo
 func (*convertUtil) Int64sToString(v []int64) []string {
 	out := make([]string, len(v))
 	for i, a := range v {
@@ -66,6 +71,7 @@ func (*convertUtil) Int64sToString(v []int64) []string {
 	}
 	return out
 }
+// Deprecated: 建议使用 lo.Map  eg: https://github.com/samber/lo
 func (*convertUtil) Int64sToInterface(v []int64) []interface{} {
 	out := make([]interface{}, len(v))
 	for i, a := range v {
@@ -74,6 +80,7 @@ func (*convertUtil) Int64sToInterface(v []int64) []interface{} {
 	return out
 }
 
+// Deprecated: 建议使用 lo.Map  eg: https://github.com/samber/lo
 func (*convertUtil) StringsToInt(v []string) ([]int, error) {
 	out := make([]int, len(v))
 	for i, a := range v {
@@ -85,6 +92,7 @@ func (*convertUtil) StringsToInt(v []string) ([]int, error) {
 	}
 	return out, nil
 }
+// Deprecated: 建议使用 lo.Map  eg: https://github.com/samber/lo
 func (*convertUtil) StringsToInt64(v []string) ([]int64, error) {
 	out := make([]int64, len(v))
 	for i, a := range v {
@@ -96,6 +104,7 @@ func (*convertUtil) StringsToInt64(v []string) ([]int64, error) {
 	}
 	return out, nil
 }
+// Deprecated: 建议使用 lo.Map  eg: https://github.com/samber/lo
 func (*convertUtil) StringsToInterface(v []string) []interface{} {
 	out := make([]interface{}, len(v))
 	for i, a := range v {

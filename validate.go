@@ -54,11 +54,11 @@ func (*validateUtil) validateRegex(f validator.FieldLevel) bool {
 func (*validateUtil) validateTime(f validator.FieldLevel) bool {
 	layout := f.Param()
 	if layout == "" {
-		layout = Time.Layout
+		layout = T.Layout
 	}
 	text := f.Field().String()
 
-	_, err := Time.TextToTimeOfLayout(text, layout)
+	_, err := Time(time.Local).TextToTimeOfLayout(text, layout)
 	return err == nil
 }
 
