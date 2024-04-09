@@ -57,49 +57,49 @@ type timeUtil struct {
 	LayoutDateMinute string // 带日期的分钟样式 YYYY-MM-DD hh:mm
 }
 
-func Time(loc *time.Location) *ztimeUtil {
-	return &ztimeUtil{
+func Time(loc *time.Location) *TimeUtil {
+	return &TimeUtil{
 		loc: loc,
 	}
 }
 
-type ztimeUtil struct {
+type TimeUtil struct {
 	loc *time.Location
 }
 
 // region 基础
 // 获取当前毫秒级时间戳
-func (z *ztimeUtil) GetStamp() int64 {
+func (z *TimeUtil) GetStamp() int64 {
 	return time.Now().UnixNano() / 1e6
 }
 
 // 获取当前时间
-func (z *ztimeUtil) GetTime() time.Time {
+func (z *TimeUtil) GetTime() time.Time {
 	return time.Now().In(z.loc)
 }
 
 // 获取当前时间默认样式, YYYY-MM-DD hh:mm:ss
-func (z *ztimeUtil) GetText() string {
+func (z *TimeUtil) GetText() string {
 	return time.Now().In(z.loc).Format(T.Layout)
 }
 
 // 获取当前时间日期样式, YYYY-MM-DD
-func (z *ztimeUtil) GetDateText() string {
+func (z *TimeUtil) GetDateText() string {
 	return time.Now().In(z.loc).Format(T.LayoutDate)
 }
 
 // 获取当前时间时间样式, hh:mm:ss
-func (z *ztimeUtil) GetTimeText() string {
+func (z *TimeUtil) GetTimeText() string {
 	return time.Now().In(z.loc).Format(T.LayoutTime)
 }
 
 // 获取当前时间分钟样式, hh:mm
-func (z *ztimeUtil) GetTimeMinuteText() string {
+func (z *TimeUtil) GetTimeMinuteText() string {
 	return time.Now().In(z.loc).Format(T.LayoutTimeMinute)
 }
 
 // 获取当前时间带日期的分钟样式, YYYY-MM-DD hh:mm
-func (z *ztimeUtil) GetDateMinuteTextHour() string {
+func (z *TimeUtil) GetDateMinuteTextHour() string {
 	return time.Now().In(z.loc).Format(T.LayoutDateMinute)
 }
 
@@ -108,72 +108,72 @@ func (z *ztimeUtil) GetDateMinuteTextHour() string {
 // region 转换
 
 // 将时间转为毫秒级时间戳
-func (z *ztimeUtil) TimeToStamp(t time.Time) int64 {
+func (z *TimeUtil) TimeToStamp(t time.Time) int64 {
 	return t.UnixNano() / 1e6
 }
 
 // 将时间转为默认样式的字符串
-func (z *ztimeUtil) TimeToText(t time.Time) string {
+func (z *TimeUtil) TimeToText(t time.Time) string {
 	return t.In(z.loc).Format(T.Layout)
 }
 
 // 将时间转为日期样式的字符串
-func (z *ztimeUtil) TimeToDateText(t time.Time) string {
+func (z *TimeUtil) TimeToDateText(t time.Time) string {
 	return t.In(z.loc).Format(T.LayoutDate)
 }
 
 // 将时间转为指定样式的字符串
-func (z *ztimeUtil) TimeToTextOfLayout(t time.Time, layout string) string {
+func (z *TimeUtil) TimeToTextOfLayout(t time.Time, layout string) string {
 	return t.In(z.loc).Format(layout)
 }
 
 // 毫秒级时间戳转时间
-func (z *ztimeUtil) StampToTime(stamp int64) time.Time {
+func (z *TimeUtil) StampToTime(stamp int64) time.Time {
 	return time.Unix(0, stamp*1e6).In(z.loc)
 }
 
 // 将毫秒级时间戳转为默认样式的字符串
-func (z *ztimeUtil) StampToText(stamp int64) string {
+func (z *TimeUtil) StampToText(stamp int64) string {
 	return time.Unix(0, stamp*1e6).In(z.loc).Format(T.Layout)
 }
 
 // 将毫秒级时间戳转为日期样式的字符串
-func (z *ztimeUtil) StampToDateText(stamp int64) string {
+func (z *TimeUtil) StampToDateText(stamp int64) string {
 	return time.Unix(0, stamp*1e6).In(z.loc).Format(T.LayoutDate)
 }
 
 // 将毫秒级时间戳转为指定样式的字符串
-func (z *ztimeUtil) StampToTextOfLayout(stamp int64, layout string) string {
+func (z *TimeUtil) StampToTextOfLayout(stamp int64, layout string) string {
 	return time.Unix(0, stamp*1e6).In(z.loc).Format(layout)
 }
 
 // 将标准样式时间文本转为时间
-func (z *ztimeUtil) TextToTime(text string) (time.Time, error) {
+func (z *TimeUtil) TextToTime(text string) (time.Time, error) {
 	return time.ParseInLocation(T.Layout, text, z.loc)
 }
 
 // 将日期样式时间文本转为时间
-func (z *ztimeUtil) DateTextToTime(text string) (time.Time, error) {
+func (z *TimeUtil) DateTextToTime(text string) (time.Time, error) {
 	return time.ParseInLocation(T.LayoutDate, text, z.loc)
 }
 
 // 将指定样式时间文本转为时间
-func (z *ztimeUtil) TextToTimeOfLayout(text, layout string) (time.Time, error) {
+func (z *TimeUtil) TextToTimeOfLayout(text, layout string) (time.Time, error) {
 	return time.ParseInLocation(layout, text, z.loc)
 }
 
 // 将标准样式时间文本转为毫秒级时间戳
-func (z *ztimeUtil) TextToStamp(text string) (int64, error) {
+func (z *TimeUtil) TextToStamp(text string) (int64, error) {
 	return z.TextToStampOfLayout(text, T.Layout)
 }
 
 // 将日期样式时间文本转为毫秒级时间戳
-func (z *ztimeUtil) DateTextToStamp(text string) (int64, error) {
+func (z *TimeUtil) DateTextToStamp(text string) (int64, error) {
 	return z.TextToStampOfLayout(text, T.LayoutDate)
 }
 
 // 将时间文本转为毫秒级时间戳
-func (z *ztimeUtil) TextToStampOfLayout(text, layout string) (int64, error) {
+func (z *TimeUtil) TextToStampOfLayout(text, layout string) (int64, error) {
 	t, e := time.ParseInLocation(layout, text, z.loc)
 	if e != nil {
 		return 0, e
@@ -184,27 +184,57 @@ func (z *ztimeUtil) TextToStampOfLayout(text, layout string) (int64, error) {
 // endregion
 
 // 获取当天开始时的毫秒级时间戳(0时0分0秒)
-func (z *ztimeUtil) GetDayStartTime() time.Time {
+func (z *TimeUtil) GetDayStartTime() time.Time {
 	t := time.Now().In(z.loc)
 	return time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, z.loc)
 }
 
 // 获取当天开始时的毫秒级时间戳(0时0分0秒)
-func (z *ztimeUtil) GetDayStartStamp() int64 {
+func (z *TimeUtil) GetDayStartStamp() int64 {
 	t := time.Now().In(z.loc)
 	t = time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, z.loc)
 	return t.Unix() * 1e3
 }
 
 // 获取传入时间戳当天的开始时间戳(0时0分0秒)
-func (z *ztimeUtil) GetDayStartTimeOfTime(t time.Time) time.Time {
+func (z *TimeUtil) GetDayStartTimeOfTime(t time.Time) time.Time {
 	t = t.In(z.loc)
 	return time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, z.loc)
 }
 
 // 获取传入时间戳当天的开始时间戳(0时0分0秒)
-func (z *ztimeUtil) GetDayStartStampOfStamp(stamp int64) int64 {
+func (z *TimeUtil) GetDayStartStampOfStamp(stamp int64) int64 {
 	t := time.Unix(0, stamp*1e6).In(z.loc)
 	t = time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, z.loc)
 	return t.Unix() * 1e3
+}
+
+// GetWeekStartTimestampBy 获取指定时间当周的起始时间(周一凌晨0点)
+func (z *TimeUtil) GetWeekStartTimeOfWeekOne(timestamp int64) time.Time {
+	now := time.Unix(timestamp, 0).In(z.loc)
+
+	// 计算当前周的起始天（周一）
+	weekday := int(now.Weekday())
+	if weekday == 0 {
+		weekday = 7
+	}
+	offset := weekday - 1
+	t := now.AddDate(0, 0, -offset)
+
+	t = time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, z.loc)
+	// 将零点时间转换为秒时间戳
+	return t
+}
+
+// GetWeekStartTimestampBy 获取指定时间当周的起始时间(周日凌晨0点)
+func (z *TimeUtil) GetWeekStartTimeOfWeekDay(timestamp int64) time.Time {
+	now := time.Unix(timestamp, 0).In(z.loc)
+
+	// 计算当前周的起始天（周日）
+	weekday := int(now.Weekday())
+	t := now.AddDate(0, 0, -weekday)
+
+	t = time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, z.loc)
+	// 将零点时间转换为秒时间戳
+	return t
 }
