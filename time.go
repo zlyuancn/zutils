@@ -209,32 +209,26 @@ func (z *TimeUtil) GetDayStartStampOfStamp(stamp int64) int64 {
 	return t.Unix() * 1e3
 }
 
-// GetWeekStartTimestampBy 获取指定时间当周的起始时间(周一凌晨0点)
-func (z *TimeUtil) GetWeekStartTimeOfWeekOne(timestamp int64) time.Time {
-	now := time.Unix(timestamp, 0).In(z.loc)
+// GetWeekStartTimeOfWeek0 获取指定时间当周的起始时间(周日凌晨0点)
+func (z *TimeUtil) GetWeekStartTimeOfWeek0(t time.Time) time.Time {
+	t = t.In(z.loc)
+	// 计算当前周的起始天（周日）
+	weekday := int(t.Weekday())
+	t = t.AddDate(0, 0, -weekday)
+	t = time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, z.loc)
+	return t
+}
 
+// GetWeekStartTimeOfWeek1 获取指定时间当周的起始时间(周一凌晨0点)
+func (z *TimeUtil) GetWeekStartTimeOfWeek1(t time.Time) time.Time {
+	t = t.In(z.loc)
 	// 计算当前周的起始天（周一）
-	weekday := int(now.Weekday())
+	weekday := int(t.Weekday())
 	if weekday == 0 {
 		weekday = 7
 	}
 	offset := weekday - 1
-	t := now.AddDate(0, 0, -offset)
-
+	t = t.AddDate(0, 0, -offset)
 	t = time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, z.loc)
-	// 将零点时间转换为秒时间戳
-	return t
-}
-
-// GetWeekStartTimestampBy 获取指定时间当周的起始时间(周日凌晨0点)
-func (z *TimeUtil) GetWeekStartTimeOfWeekDay(timestamp int64) time.Time {
-	now := time.Unix(timestamp, 0).In(z.loc)
-
-	// 计算当前周的起始天（周日）
-	weekday := int(now.Weekday())
-	t := now.AddDate(0, 0, -weekday)
-
-	t = time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, z.loc)
-	// 将零点时间转换为秒时间戳
 	return t
 }
