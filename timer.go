@@ -28,7 +28,7 @@ func (timerUtils) NewDoTicker(d time.Duration, fn func(count int, t time.Time)) 
 			select {
 			case t := <-timer.C:
 				count++
-				fn(count, t)
+				go fn(count, t)
 			case <-stopCh:
 				start = false
 			}
