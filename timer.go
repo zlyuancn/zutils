@@ -10,6 +10,7 @@ package zutils
 
 import (
 	"context"
+	"sync/atomic"
 	"time"
 )
 
@@ -37,8 +38,12 @@ func (timerUtils) NewDoTicker(d time.Duration, fn func(count int, t time.Time)) 
 		timer.Stop()
 		stopCh <- struct{}{}
 	}()
+
+	var isStop int32
 	return func() {
-		stopCh <- struct{}{}
-		<-stopCh
+		if atomic.CompareAndSwapInt32(&isStop, 0, 1) { // 只执行一次
+			stopCh <- struct{}{}
+			<-stopCh
+		}
 	}
 }
