@@ -18,14 +18,27 @@ var Timer = new(timerUtils)
 type timerUtils struct{}
 
 // 创建一个Ticker, 每隔 d 会执行一次 fn
-func (timerUtils) NewDoTicker(d time.Duration, fn func(i int, t time.Time)) context.CancelFunc {
+func (timerUtils) NewDoTicker(d time.Duration, fn func(count int, t time.Time)) context.CancelFunc {
 	timer := time.NewTicker(d)
+	stopCh := make(chan struct{})
 	go func() {
-		i := 0
-		for t := range timer.C {
-			fn(i, t)
-			i++
+		count := 0
+		start := true
+		for start {
+			select {
+			case t := <-timer.C:
+				count++
+				fn(count, t)
+			case <-stopCh:
+				start = false
+			}
 		}
+
+		timer.Stop()
+		stopCh <- struct{}{}
 	}()
-	return timer.Stop
+	return func() {
+		stopCh <- struct{}{}
+		<-stopCh
+	}
 }
